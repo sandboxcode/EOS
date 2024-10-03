@@ -82,7 +82,8 @@ parameter = {
     'pvpowernow': 211.137503624,                     # Current PV power generation (W)
     'start_solution': start_solution,                # Initial solution for the optimization
     'haushaltsgeraet_wh': 937,                       # Household appliance consumption (Wh)
-    'haushaltsgeraet_dauer': 0                       # Duration of appliance usage (hours)
+    'haushaltsgeraet_dauer': 0,                       # Duration of appliance usage (hours)
+    'min_soc_prozent': 70                            # PV Battery min. Soc possible
 }
 
 # Initialize the optimization problem

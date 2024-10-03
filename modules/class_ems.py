@@ -134,6 +134,9 @@ class EnergieManagementSystem:
 
             # Letzter Akkuzustand speichern
             akku_soc_pro_stunde[stunde_since_now] = self.akku.ladezustand_in_prozent()
+            if self.akku.ladezustand_in_prozent() < 70:
+                print (self.akku.ladezustand_in_prozent(), " ", self.akku.min_soc_wh, " ",self.akku.min_soc_prozent)
+                
 
         # Gesamtkosten berechnen
         gesamtkosten_euro = np.nansum(kosten_euro_pro_stunde) - np.nansum(einnahmen_euro_pro_stunde)
