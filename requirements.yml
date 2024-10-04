@@ -1,0 +1,16 @@
+name: eos
+channels:
+  - defaults
+dependencies:
+  - python=3.11
+  - flask=3.0.3
+  - numpy=1.23.5
+  - requests
+  - pytz
+  - matplotlib=3.9.0
+  - deap=1.4.1
+  - scipy
+  - scikit-learn=1.4.2  # scikit-learn ist der Conda-Name für sklearn
+  - pandas
+  - tensorflow=2.12
+  - joblib=1.4.2

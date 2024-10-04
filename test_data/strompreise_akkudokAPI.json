@@ -1,0 +1,442 @@
+{
+  "meta": {
+    "start_timestamp": "2024-02-25",
+    "end_timestamp": "2024-02-26",
+    "start": "2024-02-25T00:00:00.000Z",
+    "end": "2024-02-26T00:00:00.000Z"
+  },
+  "values": [
+    {
+      "start_timestamp": 1708815600000,
+      "end_timestamp": 1708819200000,
+      "marketprice": 56.57,
+      "unit": "Eur/MWh",
+      "start": "2024-02-24T23:00:00.000Z",
+      "end": "2024-02-25T00:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.66
+    },
+    {
+      "start_timestamp": 1708819200000,
+      "end_timestamp": 1708822800000,
+      "marketprice": 55.44,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T00:00:00.000Z",
+      "end": "2024-02-25T01:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.54
+    },
+    {
+      "start_timestamp": 1708822800000,
+      "end_timestamp": 1708826400000,
+      "marketprice": 55.38,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T01:00:00.000Z",
+      "end": "2024-02-25T02:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.54
+    },
+    {
+      "start_timestamp": 1708826400000,
+      "end_timestamp": 1708830000000,
+      "marketprice": 54.89,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T02:00:00.000Z",
+      "end": "2024-02-25T03:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.49
+    },
+    {
+      "start_timestamp": 1708830000000,
+      "end_timestamp": 1708833600000,
+      "marketprice": 55.19,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T03:00:00.000Z",
+      "end": "2024-02-25T04:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.52
+    },
+    {
+      "start_timestamp": 1708833600000,
+      "end_timestamp": 1708837200000,
+      "marketprice": 55.07,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T04:00:00.000Z",
+      "end": "2024-02-25T05:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.51
+    },
+    {
+      "start_timestamp": 1708837200000,
+      "end_timestamp": 1708840800000,
+      "marketprice": 56.71,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T05:00:00.000Z",
+      "end": "2024-02-25T06:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.67
+    },
+    {
+      "start_timestamp": 1708840800000,
+      "end_timestamp": 1708844400000,
+      "marketprice": 59.92,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T06:00:00.000Z",
+      "end": "2024-02-25T07:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.99
+    },
+    {
+      "start_timestamp": 1708844400000,
+      "end_timestamp": 1708848000000,
+      "marketprice": 61.58,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T07:00:00.000Z",
+      "end": "2024-02-25T08:00:00.000Z",
+      "marketpriceEurocentPerKWh": 6.16
+    },
+    {
+      "start_timestamp": 1708848000000,
+      "end_timestamp": 1708851600000,
+      "marketprice": 61.82,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T08:00:00.000Z",
+      "end": "2024-02-25T09:00:00.000Z",
+      "marketpriceEurocentPerKWh": 6.18
+    },
+    {
+      "start_timestamp": 1708851600000,
+      "end_timestamp": 1708855200000,
+      "marketprice": 56.31,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T09:00:00.000Z",
+      "end": "2024-02-25T10:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.63
+    },
+    {
+      "start_timestamp": 1708855200000,
+      "end_timestamp": 1708858800000,
+      "marketprice": 54.12,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T10:00:00.000Z",
+      "end": "2024-02-25T11:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.41
+    },
+    {
+      "start_timestamp": 1708858800000,
+      "end_timestamp": 1708862400000,
+      "marketprice": 50,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T11:00:00.000Z",
+      "end": "2024-02-25T12:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5
+    },
+    {
+      "start_timestamp": 1708862400000,
+      "end_timestamp": 1708866000000,
+      "marketprice": 46.03,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T12:00:00.000Z",
+      "end": "2024-02-25T13:00:00.000Z",
+      "marketpriceEurocentPerKWh": 4.6
+    },
+    {
+      "start_timestamp": 1708866000000,
+      "end_timestamp": 1708869600000,
+      "marketprice": 49.84,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T13:00:00.000Z",
+      "end": "2024-02-25T14:00:00.000Z",
+      "marketpriceEurocentPerKWh": 4.98
+    },
+    {
+      "start_timestamp": 1708869600000,
+      "end_timestamp": 1708873200000,
+      "marketprice": 55,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T14:00:00.000Z",
+      "end": "2024-02-25T15:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.5
+    },
+    {
+      "start_timestamp": 1708873200000,
+      "end_timestamp": 1708876800000,
+      "marketprice": 67.8,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T15:00:00.000Z",
+      "end": "2024-02-25T16:00:00.000Z",
+      "marketpriceEurocentPerKWh": 6.78
+    },
+    {
+      "start_timestamp": 1708876800000,
+      "end_timestamp": 1708880400000,
+      "marketprice": 82.19,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T16:00:00.000Z",
+      "end": "2024-02-25T17:00:00.000Z",
+      "marketpriceEurocentPerKWh": 8.22
+    },
+    {
+      "start_timestamp": 1708880400000,
+      "end_timestamp": 1708884000000,
+      "marketprice": 93.69,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T17:00:00.000Z",
+      "end": "2024-02-25T18:00:00.000Z",
+      "marketpriceEurocentPerKWh": 9.37
+    },
+    {
+      "start_timestamp": 1708884000000,
+      "end_timestamp": 1708887600000,
+      "marketprice": 79.18,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T18:00:00.000Z",
+      "end": "2024-02-25T19:00:00.000Z",
+      "marketpriceEurocentPerKWh": 7.92
+    },
+    {
+      "start_timestamp": 1708887600000,
+      "end_timestamp": 1708891200000,
+      "marketprice": 69.99,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T19:00:00.000Z",
+      "end": "2024-02-25T20:00:00.000Z",
+      "marketpriceEurocentPerKWh": 7
+    },
+    {
+      "start_timestamp": 1708891200000,
+      "end_timestamp": 1708894800000,
+      "marketprice": 65.92,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T20:00:00.000Z",
+      "end": "2024-02-25T21:00:00.000Z",
+      "marketpriceEurocentPerKWh": 6.59
+    },
+    {
+      "start_timestamp": 1708894800000,
+      "end_timestamp": 1708898400000,
+      "marketprice": 65.23,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T21:00:00.000Z",
+      "end": "2024-02-25T22:00:00.000Z",
+      "marketpriceEurocentPerKWh": 6.52
+    },
+    {
+      "start_timestamp": 1708898400000,
+      "end_timestamp": 1708902000000,
+      "marketprice": 58.38,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T22:00:00.000Z",
+      "end": "2024-02-25T23:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.84
+    },
+    {
+      "start_timestamp": 1708902000000,
+      "end_timestamp": 1708905600000,
+      "marketprice": 57.83,
+      "unit": "Eur/MWh",
+      "start": "2024-02-25T23:00:00.000Z",
+      "end": "2024-02-26T00:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.78
+    },
+    {
+      "start_timestamp": 1708905600000,
+      "end_timestamp": 1708909200000,
+      "marketprice": 56.82,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T00:00:00.000Z",
+      "end": "2024-02-26T01:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.68
+    },
+    {
+      "start_timestamp": 1708909200000,
+      "end_timestamp": 1708912800000,
+      "marketprice": 55.7,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T01:00:00.000Z",
+      "end": "2024-02-26T02:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.57
+    },
+    {
+      "start_timestamp": 1708912800000,
+      "end_timestamp": 1708916400000,
+      "marketprice": 51.8,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T02:00:00.000Z",
+      "end": "2024-02-26T03:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.18
+    },
+    {
+      "start_timestamp": 1708916400000,
+      "end_timestamp": 1708920000000,
+      "marketprice": 53.3,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T03:00:00.000Z",
+      "end": "2024-02-26T04:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.33
+    },
+    {
+      "start_timestamp": 1708920000000,
+      "end_timestamp": 1708923600000,
+      "marketprice": 57.92,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T04:00:00.000Z",
+      "end": "2024-02-26T05:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.79
+    },
+    {
+      "start_timestamp": 1708923600000,
+      "end_timestamp": 1708927200000,
+      "marketprice": 70.02,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T05:00:00.000Z",
+      "end": "2024-02-26T06:00:00.000Z",
+      "marketpriceEurocentPerKWh": 7
+    },
+    {
+      "start_timestamp": 1708927200000,
+      "end_timestamp": 1708930800000,
+      "marketprice": 79.9,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T06:00:00.000Z",
+      "end": "2024-02-26T07:00:00.000Z",
+      "marketpriceEurocentPerKWh": 7.99
+    },
+    {
+      "start_timestamp": 1708930800000,
+      "end_timestamp": 1708934400000,
+      "marketprice": 81.6,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T07:00:00.000Z",
+      "end": "2024-02-26T08:00:00.000Z",
+      "marketpriceEurocentPerKWh": 8.16
+    },
+    {
+      "start_timestamp": 1708934400000,
+      "end_timestamp": 1708938000000,
+      "marketprice": 73.83,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T08:00:00.000Z",
+      "end": "2024-02-26T09:00:00.000Z",
+      "marketpriceEurocentPerKWh": 7.38
+    },
+    {
+      "start_timestamp": 1708938000000,
+      "end_timestamp": 1708941600000,
+      "marketprice": 66.65,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T09:00:00.000Z",
+      "end": "2024-02-26T10:00:00.000Z",
+      "marketpriceEurocentPerKWh": 6.67
+    },
+    {
+      "start_timestamp": 1708941600000,
+      "end_timestamp": 1708945200000,
+      "marketprice": 65.03,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T10:00:00.000Z",
+      "end": "2024-02-26T11:00:00.000Z",
+      "marketpriceEurocentPerKWh": 6.5
+    },
+    {
+      "start_timestamp": 1708945200000,
+      "end_timestamp": 1708948800000,
+      "marketprice": 58.42,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T11:00:00.000Z",
+      "end": "2024-02-26T12:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.84
+    },
+    {
+      "start_timestamp": 1708948800000,
+      "end_timestamp": 1708952400000,
+      "marketprice": 58.19,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T12:00:00.000Z",
+      "end": "2024-02-26T13:00:00.000Z",
+      "marketpriceEurocentPerKWh": 5.82
+    },
+    {
+      "start_timestamp": 1708952400000,
+      "end_timestamp": 1708956000000,
+      "marketprice": 61.29,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T13:00:00.000Z",
+      "end": "2024-02-26T14:00:00.000Z",
+      "marketpriceEurocentPerKWh": 6.13
+    },
+    {
+      "start_timestamp": 1708956000000,
+      "end_timestamp": 1708959600000,
+      "marketprice": 64.95,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T14:00:00.000Z",
+      "end": "2024-02-26T15:00:00.000Z",
+      "marketpriceEurocentPerKWh": 6.5
+    },
+    {
+      "start_timestamp": 1708959600000,
+      "end_timestamp": 1708963200000,
+      "marketprice": 69.99,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T15:00:00.000Z",
+      "end": "2024-02-26T16:00:00.000Z",
+      "marketpriceEurocentPerKWh": 7
+    },
+    {
+      "start_timestamp": 1708963200000,
+      "end_timestamp": 1708966800000,
+      "marketprice": 77,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T16:00:00.000Z",
+      "end": "2024-02-26T17:00:00.000Z",
+      "marketpriceEurocentPerKWh": 7.7
+    },
+    {
+      "start_timestamp": 1708966800000,
+      "end_timestamp": 1708970400000,
+      "marketprice": 85.32,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T17:00:00.000Z",
+      "end": "2024-02-26T18:00:00.000Z",
+      "marketpriceEurocentPerKWh": 8.53
+    },
+    {
+      "start_timestamp": 1708970400000,
+      "end_timestamp": 1708974000000,
+      "marketprice": 81.01,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T18:00:00.000Z",
+      "end": "2024-02-26T19:00:00.000Z",
+      "marketpriceEurocentPerKWh": 8.1
+    },
+    {
+      "start_timestamp": 1708974000000,
+      "end_timestamp": 1708977600000,
+      "marketprice": 72.21,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T19:00:00.000Z",
+      "end": "2024-02-26T20:00:00.000Z",
+      "marketpriceEurocentPerKWh": 7.22
+    },
+    {
+      "start_timestamp": 1708977600000,
+      "end_timestamp": 1708981200000,
+      "marketprice": 65.69,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T20:00:00.000Z",
+      "end": "2024-02-26T21:00:00.000Z",
+      "marketpriceEurocentPerKWh": 6.57
+    },
+    {
+      "start_timestamp": 1708981200000,
+      "end_timestamp": 1708984800000,
+      "marketprice": 65.21,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T21:00:00.000Z",
+      "end": "2024-02-26T22:00:00.000Z",
+      "marketpriceEurocentPerKWh": 6.52
+    },
+    {
+      "start_timestamp": 1708984800000,
+      "end_timestamp": 1708988400000,
+      "marketprice": 60.76,
+      "unit": "Eur/MWh",
+      "start": "2024-02-26T22:00:00.000Z",
+      "end": "2024-02-26T23:00:00.000Z",
+      "marketpriceEurocentPerKWh": 6.08
+    }
+  ]
+}

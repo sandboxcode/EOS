@@ -1,0 +1,1663 @@
+[
+    {
+        "id": "46d0f42657c51689",
+        "type": "tab",
+        "label": "EOS",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "31d21009fe6e6f10",
+        "type": "http request",
+        "z": "46d0f42657c51689",
+        "name": "",
+        "method": "POST",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://192.168.1.135:5000/optimize",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 850,
+        "y": 400,
+        "wires": [
+            [
+                "5254ac3b917dacf5",
+                "91545d570af8e9fc",
+                "4c91568b2936c300",
+                "6be446b0c5335881",
+                "78049b6d0d1ac7c6",
+                "ea0614b5142c9532",
+                "cf820cd8426e9f03",
+                "fd454580c8bd3409"
+            ]
+        ]
+    },
+    {
+        "id": "1d5c93541a0afea0",
+        "type": "function",
+        "z": "46d0f42657c51689",
+        "name": "function 10",
+        "func": "context.data = context.data || {};\nswitch (msg.topic) {\n    case \"soc\": \n        context.data.soc = msg.payload;\n        return null;\n    case \"strompreis\":\n        context.data.strompreis = msg.payload;\n        return null;        \n    case \"gesamtlast\":\n        context.data.gesamtlast = msg.payload;\n        return null;               \n    case \"pv_temp_forecast\":\n        context.data.temperature_forecast = msg.payload.temperature;\n        context.data.pv_forecast = msg.payload.pvpower;\n        return null;                \n    case \"soc_tesla\":\n        context.data.soc_tesla = msg.payload;\n        return null;\n    case \"akku_preis\":\n        context.data.akku_preis = parseFloat(msg.payload);\n        return null;          \n    case \"eauto_soc_ui\":\n        context.data.eauto_soc_ui = parseFloat(msg.payload);\n        return null;        \n    case \"pvpowernow\":\n        context.data.pvpowernow = parseFloat(msg.payload);\n        return null;                \n    case \"solution\":\n        context.data.start_solution = msg.payload.start_solution;\n        return null;           \n    case \"spuel\":\n        context.data.spuel = msg.payload;\n        return null;     \n    case \"spuel_onoff\":\n        context.data.spuel_onoff = msg.payload;\n        return null;                        \n               \n    default:\n        break;\n}\nmsg.topic = \"eos\";\nmsg.payload = 0;\n\nif (context.data.strompreis == null)\n    return null;\n\n\nif (context.data.akku_preis == null)\n    context.data.akku_preis = 7.0;\n\nif(context.data.eauto_soc_ui == null)\n    context.data.eauto_soc_ui=20.0;\n\nif(context.data.pvpowernow == null)\n    context.data.pvpowernow=null;\n\nif (context.data.start_solution == null)\n    context.data.start_solution = null;\n\nif (context.data.soc == null || context.data.soc_tesla == null || context.data.eauto_soc_ui==null) {\n    return msg;\n}\nif(context.data.spuel==null){\n    context.data.spuel = [4,937];\n}\nif (context.data.spuel[0] == 0) {\n    context.data.spuel = [4, 937];\n}\n\nif (context.data.spuel_onoff == null || context.data.spuel_onoff==false){\n    node.warn(\"SET 0\");\n    context.data.spuel[0] = 0.0;\n}\nnode.warn(context.data.spuel);\nnode.warn(context.data.spuel_onoff);\nnode.warn(\"Solution:\"+String(context.data.start_solution));\n\nmsg.payload = {\n    strompreis_euro_pro_wh: context.data.strompreis,\n    gesamtlast: context.data.gesamtlast,\n    pv_forecast: context.data.pv_forecast,\n    temperature_forecast: context.data.temperature_forecast,\n    pv_soc: context.data.soc,\n    pv_akku_cap: 33000*0.8,\n    einspeiseverguetung_euro_pro_wh: 7/(1000.0*100.0),\n    eauto_min_soc: context.data.eauto_soc_ui,\n    eauto_cap: 60000,\n    eauto_charge_efficiency: 0.95,\n    eauto_charge_power: 6900,\n    eauto_soc: context.data.soc_tesla,\n    start_solution: context.data.start_solution,\n    haushaltsgeraet_wh:context.data.spuel[1],\n    haushaltsgeraet_dauer:context.data.spuel[0],\n    preis_euro_pro_wh_akku: context.data.akku_preis *(0.01/1000.0)\n};\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 400,
+        "wires": [
+            [
+                "31d21009fe6e6f10",
+                "b78f61a3b7ca6ca5"
+            ]
+        ]
+    },
+    {
+        "id": "28892e61676e1fd6",
+        "type": "inject",
+        "z": "46d0f42657c51689",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "600",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 110,
+        "y": 520,
+        "wires": [
+            [
+                "1d5c93541a0afea0"
+            ]
+        ]
+    },
+    {
+        "id": "abbd7999039e416d",
+        "type": "mysql",
+        "z": "46d0f42657c51689",
+        "mydb": "98b79d76279384d6",
+        "name": "SoC_DB",
+        "x": 320,
+        "y": 280,
+        "wires": [
+            [
+                "e9a2193511079605"
+            ]
+        ]
+    },
+    {
+        "id": "d41b7aea366b8cfc",
+        "type": "inject",
+        "z": "46d0f42657c51689",
+        "name": "PV SoC anfang der Stunde",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "300",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "SELECT * FROM pip WHERE topic = 'calculated_soc' AND timestamp >= CONCAT(DATE_FORMAT(NOW(), '%Y-%m-%d %H'), ':00:00') ORDER BY timestamp ASC LIMIT 1;",
+        "payload": "",
+        "payloadType": "str",
+        "x": 120,
+        "y": 280,
+        "wires": [
+            [
+                "abbd7999039e416d"
+            ]
+        ]
+    },
+    {
+        "id": "e9a2193511079605",
+        "type": "function",
+        "z": "46d0f42657c51689",
+        "name": "rename",
+        "func": "msg.topic = \"soc\";\nmsg.payload = parseFloat(msg.payload[0].data);\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 280,
+        "wires": [
+            [
+                "1d5c93541a0afea0"
+            ]
+        ]
+    },
+    {
+        "id": "07895ef6191cd713",
+        "type": "mysql",
+        "z": "46d0f42657c51689",
+        "mydb": "98b79d76279384d6",
+        "name": "SoC_DB",
+        "x": 280,
+        "y": 560,
+        "wires": [
+            [
+                "e01e707de5185a54"
+            ]
+        ]
+    },
+    {
+        "id": "8b0aaf3269b1ac74",
+        "type": "inject",
+        "z": "46d0f42657c51689",
+        "name": "soc_tesla",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "300",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "SELECT  data FROM tesla WHERE topic = 'teslamate/cars/1/battery_level' ORDER BY timestamp DESC LIMIT 1",
+        "payload": "",
+        "payloadType": "str",
+        "x": 110,
+        "y": 560,
+        "wires": [
+            [
+                "07895ef6191cd713"
+            ]
+        ]
+    },
+    {
+        "id": "e01e707de5185a54",
+        "type": "function",
+        "z": "46d0f42657c51689",
+        "name": "rename",
+        "func": "msg.topic = \"soc_tesla\";\nmsg.payload = parseFloat(msg.payload[0].data);\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 560,
+        "wires": [
+            [
+                "1d5c93541a0afea0"
+            ]
+        ]
+    },
+    {
+        "id": "5254ac3b917dacf5",
+        "type": "function",
+        "z": "46d0f42657c51689",
+        "name": "function 11",
+        "func": "let values = msg.payload.discharge_hours_bin; // Ihre 24 Stunden-Werte\nlet values_eauto = msg.payload.eautocharge_hours_float; // Ihre 24 Stunden-Werte\nlet spuelstart = msg.payload.spuelstart;\nlet currentDate = new Date(); // Aktuelles Datum und Zeit\n\n// Wir gehen davon aus, dass die lokale Zeit bereits korrekt vorliegt\nlet slqCommand = \"START TRANSACTION;\\n\"\nvalues.forEach((value, index) => {\n    // Erstellen eines neuen Datumsobjekts für jede Stunde des aktuellen Tages\n    let timestamp = new Date(currentDate);\n    timestamp.setHours(index);  // Setzen der Stunde\n    timestamp.setMinutes(0);    // Setzen der Minuten auf 0\n    timestamp.setSeconds(0);    // Setzen der Sekunden auf 0\n    let localTimestamp = timestamp;\n\n    // Manuelle Formatierung in das MariaDB-Format YYYY-MM-DD HH:MM:SS\n    let year = localTimestamp.getFullYear();\n    let month = ('0' + (localTimestamp.getMonth() + 1)).slice(-2);\n    let day = ('0' + localTimestamp.getDate()).slice(-2);\n    let hours = ('0' + localTimestamp.getHours()).slice(-2);\n    let minutes = ('0' + localTimestamp.getMinutes()).slice(-2);\n    let seconds = ('0' + localTimestamp.getSeconds()).slice(-2);\n\n    // Formatierung für MariaDB\n    let timestampStr = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;\n\n    // Erstellen des SQL-Befehls\n    slqCommand += `DELETE FROM eos WHERE timestamp = '${timestampStr}';\\n`;\n    slqCommand += `INSERT INTO eos (timestamp, topic, data) VALUES ('${timestampStr}','pv_discharge_hours_bin', ${value});\\n`;\n    slqCommand += `INSERT INTO eos (timestamp, topic, data) VALUES ('${timestampStr}','eautocharge_hours_float', ${values_eauto[index]});\\n`;\n\n    // Hinzufügen des Spülstarts, falls die aktuelle Stunde dem Spülstart entspricht\n    if (spuelstart == index) {\n        slqCommand += `INSERT INTO eos (timestamp, topic, data) VALUES ('${timestampStr}','spuelstart_hours_bin', 1);\\n`;\n    } else {\n        slqCommand += `INSERT INTO eos (timestamp, topic, data) VALUES ('${timestampStr}','spuelstart_hours_bin', 0);\\n`;\n    }\n});\nslqCommand += \"COMMIT;\";\nmsg.topic = slqCommand;\nmsg.payload = slqCommand;\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1070,
+        "y": 300,
+        "wires": [
+            [
+                "0f06d7cf64549a84",
+                "aee72bd84ce5b95b"
+            ]
+        ]
+    },
+    {
+        "id": "0f06d7cf64549a84",
+        "type": "mysql",
+        "z": "46d0f42657c51689",
+        "mydb": "98b79d76279384d6",
+        "name": "MariaDB",
+        "x": 1320,
+        "y": 260,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "efeb5ec9fa6241ec",
+        "type": "mqtt out",
+        "z": "46d0f42657c51689",
+        "name": "",
+        "topic": "pip/inverter_1/output_source_priority/set",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "fdc4730c4d327208",
+        "x": 1440,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "949588fe5374e2df",
+        "type": "inject",
+        "z": "46d0f42657c51689",
+        "name": "Ampere",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "v": "9",
+                "vt": "num"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "9",
+        "payloadType": "num",
+        "x": 1130,
+        "y": 700,
+        "wires": [
+            [
+                "0f0c53e526cdc77f"
+            ]
+        ]
+    },
+    {
+        "id": "2a33b3ee114f256e",
+        "type": "inject",
+        "z": "46d0f42657c51689",
+        "name": "Aus",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "v": "1",
+                "vt": "num"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "1",
+        "payloadType": "num",
+        "x": 1130,
+        "y": 580,
+        "wires": [
+            [
+                "5015ebff65900280"
+            ]
+        ]
+    },
+    {
+        "id": "87704779536942da",
+        "type": "inject",
+        "z": "46d0f42657c51689",
+        "name": "An",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "v": "2",
+                "vt": "num"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "2",
+        "payloadType": "num",
+        "x": 1130,
+        "y": 620,
+        "wires": [
+            [
+                "5015ebff65900280"
+            ]
+        ]
+    },
+    {
+        "id": "5015ebff65900280",
+        "type": "mqtt out",
+        "z": "46d0f42657c51689",
+        "name": "",
+        "topic": "go-eCharger/241008/frc/set",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "fc11c16064357af9",
+        "x": 1400,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "0f0c53e526cdc77f",
+        "type": "mqtt out",
+        "z": "46d0f42657c51689",
+        "name": "",
+        "topic": "go-eCharger/241008/amp/set",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "fc11c16064357af9",
+        "x": 1400,
+        "y": 680,
+        "wires": []
+    },
+    {
+        "id": "91545d570af8e9fc",
+        "type": "function",
+        "z": "46d0f42657c51689",
+        "name": "E-Auto Charge",
+        "func": "let values = msg.payload.discharge_hours_bin; // Ihre 24 Stunden-Werte\nlet values_eauto = msg.payload.eautocharge_hours_float; // Ihre 24 Stunden-Werte\n\n\nlet currentDate = new Date(); // Aktuelles Datum und Zeit\nlet currentUTCDate = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate()));\n\nlet currentYear = currentDate.getFullYear();\nlet currentMonth = currentDate.getMonth(); // Monat von 0-11\nlet currentDay = currentDate.getDate();\nlet currentHour = currentDate.getHours();\n\n// Index basierend auf dem aktuellen Datum und der Stunde finden\n// Annahme: values und values_eauto sind für den aktuellen Tag\nlet indexForCurrentHour = currentHour; // Wenn die Arrays genau 24 Einträge für jede Stunde haben\n\n// Werte für die aktuelle Stunde extrahieren\nlet dischargeHourValue = values[indexForCurrentHour];\nlet eautochargeHourValue = values_eauto[indexForCurrentHour];\n//node.warn(indexForCurrentHour);\n//node.warn(values_eauto);\n//node.warn(values_eauto[indexForCurrentHour]);\nlet returnval=1;\n// Weiterleitung der extrahierten Werte\nif(eautochargeHourValue == 0.0)\n    returnval = 1;\nif(eautochargeHourValue > 0.0)\n    returnval = 2;\n\nmsg.payload =  returnval;\nmsg.topic = returnval;\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1040,
+        "y": 460,
+        "wires": [
+            [
+                "5015ebff65900280",
+                "c1134a17a87f2293"
+            ]
+        ]
+    },
+    {
+        "id": "4c91568b2936c300",
+        "type": "function",
+        "z": "46d0f42657c51689",
+        "name": "PV Akku Discharge",
+        "func": "let values = msg.payload.discharge_hours_bin; // Ihre 24 Stunden-Werte\nlet values_eauto = msg.payload.eautocharge_hours_float; // Ihre 24 Stunden-Werte\n\n\nlet currentDate = new Date(); // Aktuelles Datum und Zeit\nlet currentUTCDate = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate()));\n\nlet currentYear = currentDate.getFullYear();\nlet currentMonth = currentDate.getMonth(); // Monat von 0-11\nlet currentDay = currentDate.getDate();\nlet currentHour = currentDate.getHours();\n\n// Index basierend auf dem aktuellen Datum und der Stunde finden\n// Annahme: values und values_eauto sind für den aktuellen Tag\nlet indexForCurrentHour = currentHour; // Wenn die Arrays genau 24 Einträge für jede Stunde haben\n\n// Werte für die aktuelle Stunde extrahieren\nlet dischargeHourValue = values[indexForCurrentHour];\nlet eautochargeHourValue = values_eauto[indexForCurrentHour];\n\nmsg.topic = msg.payload = \"Discharge\";\n\n// Weiterleitung der extrahierten Werte\nif(dischargeHourValue==0)\n    msg.topic = msg.payload = \"No discharge\";\nlet returnval = 1;\n// Weiterleitung der extrahierten Werte\nif (eautochargeHourValue == 0)\n    returnval = 1;\nif (eautochargeHourValue == 1)\n    returnval = 2;\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 520,
+        "wires": [
+            [
+                "efeb5ec9fa6241ec"
+            ]
+        ]
+    },
+    {
+        "id": "7a4045925ed0d718",
+        "type": "inject",
+        "z": "46d0f42657c51689",
+        "name": "Discharge OFF",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "No discharge",
+        "payload": "No discharge",
+        "payloadType": "str",
+        "x": 780,
+        "y": 120,
+        "wires": [
+            [
+                "efeb5ec9fa6241ec"
+            ]
+        ]
+    },
+    {
+        "id": "965ba2575e965596",
+        "type": "inject",
+        "z": "46d0f42657c51689",
+        "name": "Discharge On",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "Discharge",
+        "payload": "Discharge",
+        "payloadType": "str",
+        "x": 790,
+        "y": 180,
+        "wires": [
+            [
+                "efeb5ec9fa6241ec"
+            ]
+        ]
+    },
+    {
+        "id": "730bb97c259dc8e5",
+        "type": "ui_slider",
+        "z": "46d0f42657c51689",
+        "name": "eauto_soc_ui",
+        "label": "Gewünschter SoC E-Auto?",
+        "tooltip": "",
+        "group": "a1fa7578085e9111",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "outs": "end",
+        "topic": "eauto_soc_ui",
+        "topicType": "str",
+        "min": 0,
+        "max": "100",
+        "step": 1,
+        "className": "",
+        "x": 510,
+        "y": 120,
+        "wires": [
+            [
+                "1d5c93541a0afea0"
+            ]
+        ]
+    },
+    {
+        "id": "ac2a85623ed45232",
+        "type": "home-connect-request",
+        "z": "46d0f42657c51689",
+        "auth": "d4c0267181cfdd3b",
+        "name": "Test",
+        "tag": "appliances",
+        "operationId": "get_home_appliances",
+        "haid": "",
+        "body": "",
+        "optionkey": "",
+        "programkey": "",
+        "settingkey": "",
+        "commandkey": "",
+        "statuskey": "",
+        "imagekey": "",
+        "x": 290,
+        "y": 720,
+        "wires": [
+            [
+                "0754dacfe6b91889",
+                "be73fa6ac4b9a8fd",
+                "b4053d89b87a3f8d",
+                "65a5f813e02081dd",
+                "28815ef0904cfd73"
+            ]
+        ]
+    },
+    {
+        "id": "ffb372158c82f194",
+        "type": "debug",
+        "z": "46d0f42657c51689",
+        "name": "debug 15",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 2160,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "62fb07360a175bf5",
+        "type": "inject",
+        "z": "46d0f42657c51689",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 120,
+        "y": 720,
+        "wires": [
+            [
+                "0754dacfe6b91889",
+                "b4053d89b87a3f8d"
+            ]
+        ]
+    },
+    {
+        "id": "0754dacfe6b91889",
+        "type": "home-connect-request",
+        "z": "46d0f42657c51689",
+        "auth": "d4c0267181cfdd3b",
+        "name": "",
+        "tag": "programs",
+        "operationId": "get_available_programs",
+        "haid": "400110386855001336",
+        "body": "",
+        "optionkey": "",
+        "programkey": "",
+        "settingkey": "",
+        "commandkey": "",
+        "statuskey": "",
+        "imagekey": "",
+        "x": 450,
+        "y": 800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b1bd9b767cf95ea7",
+        "type": "ui_dropdown",
+        "z": "46d0f42657c51689",
+        "name": "",
+        "label": "Spülprogramm",
+        "tooltip": "",
+        "place": "Eco",
+        "group": "a1fa7578085e9111",
+        "order": 3,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "multiple": false,
+        "options": [
+            {
+                "label": "Intensiv70",
+                "value": "Dishcare.Dishwasher.Program.Intensiv70",
+                "type": "str"
+            },
+            {
+                "label": "Auto",
+                "value": "Dishcare.Dishwasher.Program.Auto2",
+                "type": "str"
+            },
+            {
+                "label": "Eco",
+                "value": "Dishcare.Dishwasher.Program.Eco50",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "topic",
+        "topicType": "msg",
+        "className": "",
+        "x": 100,
+        "y": 960,
+        "wires": [
+            [
+                "b4cd39f93cd8a6f6"
+            ]
+        ]
+    },
+    {
+        "id": "be73fa6ac4b9a8fd",
+        "type": "home-connect-request",
+        "z": "46d0f42657c51689",
+        "auth": "d4c0267181cfdd3b",
+        "name": "Intesnsiv70",
+        "tag": "programs",
+        "operationId": "set_selected_program",
+        "haid": "400110386855001336",
+        "body": "{\n  \"data\": {\n    \"key\": \"Dishcare.Dishwasher.Program.Intensiv70\",\n    \"name\": \"Hot air\",\n    \"options\": []\n  }\n}",
+        "optionkey": "",
+        "programkey": "",
+        "settingkey": "",
+        "commandkey": "",
+        "statuskey": "",
+        "imagekey": "",
+        "x": 550,
+        "y": 900,
+        "wires": [
+            [
+                "75c44a862585f4ce"
+            ]
+        ]
+    },
+    {
+        "id": "b4053d89b87a3f8d",
+        "type": "home-connect-request",
+        "z": "46d0f42657c51689",
+        "auth": "d4c0267181cfdd3b",
+        "name": "",
+        "tag": "programs",
+        "operationId": "get_selected_program",
+        "haid": "400110386855001336",
+        "body": "",
+        "optionkey": "",
+        "programkey": "",
+        "settingkey": "",
+        "commandkey": "",
+        "statuskey": "",
+        "imagekey": "",
+        "x": 480,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "65a5f813e02081dd",
+        "type": "home-connect-request",
+        "z": "46d0f42657c51689",
+        "auth": "d4c0267181cfdd3b",
+        "name": "Eco",
+        "tag": "programs",
+        "operationId": "set_selected_program",
+        "haid": "400110386855001336",
+        "body": "{\n  \"data\": {\n    \"key\": \"Dishcare.Dishwasher.Program.Eco50\",\n    \"name\": \"Hot air\",\n    \"options\": []\n  }\n}",
+        "optionkey": "",
+        "programkey": "",
+        "settingkey": "",
+        "commandkey": "",
+        "statuskey": "",
+        "imagekey": "",
+        "x": 530,
+        "y": 960,
+        "wires": [
+            [
+                "45b6f6d7a9310244"
+            ]
+        ]
+    },
+    {
+        "id": "b4cd39f93cd8a6f6",
+        "type": "switch",
+        "z": "46d0f42657c51689",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "Dishcare.Dishwasher.Program.Eco50",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Dishcare.Dishwasher.Program.Auto2",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "Dishcare.Dishwasher.Program.Intensiv70",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 330,
+        "y": 960,
+        "wires": [
+            [
+                "65a5f813e02081dd"
+            ],
+            [
+                "28815ef0904cfd73"
+            ],
+            [
+                "be73fa6ac4b9a8fd"
+            ]
+        ]
+    },
+    {
+        "id": "7f2b5e0e37f659c1",
+        "type": "ui_switch",
+        "z": "46d0f42657c51689",
+        "name": "",
+        "label": "Spülmaschine heute?",
+        "tooltip": "",
+        "group": "a1fa7578085e9111",
+        "order": 4,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "decouple": "false",
+        "topic": "spuel_onoff",
+        "topicType": "str",
+        "style": "",
+        "onvalue": "true",
+        "onvalueType": "bool",
+        "onicon": "",
+        "oncolor": "",
+        "offvalue": "false",
+        "offvalueType": "bool",
+        "officon": "",
+        "offcolor": "",
+        "animate": false,
+        "className": "",
+        "x": 700,
+        "y": 1100,
+        "wires": [
+            [
+                "1d5c93541a0afea0"
+            ]
+        ]
+    },
+    {
+        "id": "6be446b0c5335881",
+        "type": "function",
+        "z": "46d0f42657c51689",
+        "name": "rename",
+        "func": "msg.topic = \"solution\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 520,
+        "wires": [
+            [
+                "1d5c93541a0afea0"
+            ]
+        ]
+    },
+    {
+        "id": "b906c5374b9bee59",
+        "type": "inject",
+        "z": "46d0f42657c51689",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "300",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "SELECT AVG(data) AS average_data FROM data WHERE topic = 'solarallpower' AND timestamp >= DATE_FORMAT(NOW(), '%Y-%m-%d %H:00:00') AND timestamp < DATE_FORMAT(NOW() + INTERVAL 1 HOUR, '%Y-%m-%d %H:00:00');",
+        "payload": "",
+        "payloadType": "date",
+        "x": 110,
+        "y": 220,
+        "wires": [
+            [
+                "b1bb53c19641554d"
+            ]
+        ]
+    },
+    {
+        "id": "b1bb53c19641554d",
+        "type": "mysql",
+        "z": "46d0f42657c51689",
+        "mydb": "98b79d76279384d6",
+        "name": "PV Power NOW",
+        "x": 320,
+        "y": 220,
+        "wires": [
+            [
+                "38cfef1aeb1fc9d5"
+            ]
+        ]
+    },
+    {
+        "id": "38cfef1aeb1fc9d5",
+        "type": "function",
+        "z": "46d0f42657c51689",
+        "name": "rename",
+        "func": "msg.topic = \"pvpowernow\";\nmsg.payload = parseFloat(msg.payload[0].average_data);\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 220,
+        "wires": [
+            [
+                "1d5c93541a0afea0"
+            ]
+        ]
+    },
+    {
+        "id": "75c44a862585f4ce",
+        "type": "function",
+        "z": "46d0f42657c51689",
+        "name": "function 14",
+        "func": "msg.topic = \"spuel\";\nmsg.payload = [2,1700];\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 900,
+        "wires": [
+            [
+                "1d5c93541a0afea0"
+            ]
+        ]
+    },
+    {
+        "id": "45b6f6d7a9310244",
+        "type": "function",
+        "z": "46d0f42657c51689",
+        "name": "function 15",
+        "func": "msg.topic = \"spuel\";\nmsg.payload = [4,937];\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 960,
+        "wires": [
+            [
+                "1d5c93541a0afea0"
+            ]
+        ]
+    },
+    {
+        "id": "036cc8961c5de838",
+        "type": "function",
+        "z": "46d0f42657c51689",
+        "name": "function 16",
+        "func": "msg.topic = \"spuel\";\nmsg.payload = [3,1300];\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 730,
+        "y": 1020,
+        "wires": [
+            [
+                "1d5c93541a0afea0"
+            ]
+        ]
+    },
+    {
+        "id": "78049b6d0d1ac7c6",
+        "type": "function",
+        "z": "46d0f42657c51689",
+        "name": "Spülmaschine",
+        "func": "msg.payload.spuelstart;\n\n// Erhalte die aktuelle Stunde\nlet jetzt = new Date();\nlet aktuelleStunde = jetzt.getHours();\n\n// Prüfe, ob die aktuelle Stunde im 'spuelstart'-Array vorhanden ist\nif (msg.payload.spuelstart==aktuelleStunde) {\n    // Wenn ja, führe eine Aktion aus\n    // Zum Beispiel: Setze einen neuen Wert für 'payload'\n    msg.payload = 1;\n} else {\n    // Wenn nein, führe eine alternative Aktion aus oder sende eine Nachricht\n    msg.payload = 0;\n}\n\n// Gib die Nachricht zurück, um sie an den nächsten Node weiterzuleiten\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1280,
+        "y": 420,
+        "wires": [
+            [
+                "eaddbeee49e9aa3d"
+            ]
+        ]
+    },
+    {
+        "id": "1196c060b7fdcde0",
+        "type": "home-connect-request",
+        "z": "46d0f42657c51689",
+        "auth": "d4c0267181cfdd3b",
+        "name": "",
+        "tag": "programs",
+        "operationId": "start_program",
+        "haid": "400110386855001336",
+        "body": "",
+        "optionkey": "",
+        "programkey": "",
+        "settingkey": "",
+        "commandkey": "",
+        "statuskey": "",
+        "imagekey": "",
+        "x": 1980,
+        "y": 440,
+        "wires": [
+            [
+                "ffb372158c82f194"
+            ]
+        ]
+    },
+    {
+        "id": "0858d56788dddf24",
+        "type": "home-connect-request",
+        "z": "46d0f42657c51689",
+        "auth": "d4c0267181cfdd3b",
+        "name": "",
+        "tag": "programs",
+        "operationId": "get_selected_program",
+        "haid": "400110386855001336",
+        "body": "",
+        "optionkey": "",
+        "programkey": "",
+        "settingkey": "",
+        "commandkey": "",
+        "statuskey": "",
+        "imagekey": "",
+        "x": 1600,
+        "y": 400,
+        "wires": [
+            [
+                "2b944bc7dbb0098e",
+                "ffb372158c82f194"
+            ]
+        ]
+    },
+    {
+        "id": "eaddbeee49e9aa3d",
+        "type": "switch",
+        "z": "46d0f42657c51689",
+        "name": "",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "1",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 1450,
+        "y": 460,
+        "wires": [
+            [
+                "0858d56788dddf24"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "2b944bc7dbb0098e",
+        "type": "function",
+        "z": "46d0f42657c51689",
+        "name": "function 17",
+        "func": "msg.topic = \"switch\";\nlet prog = msg.payload.data.key;\nmsg.body = {\n    \"data\": {\n        \"key\": prog,\n            \"name\": \"Hot air\",\n                \"options\": []\n    }\n};\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1810,
+        "y": 440,
+        "wires": [
+            [
+                "1196c060b7fdcde0",
+                "ffb372158c82f194",
+                "ccbd36244862610f"
+            ]
+        ]
+    },
+    {
+        "id": "28815ef0904cfd73",
+        "type": "home-connect-request",
+        "z": "46d0f42657c51689",
+        "auth": "d4c0267181cfdd3b",
+        "name": "Auto",
+        "tag": "programs",
+        "operationId": "set_selected_program",
+        "haid": "400110386855001336",
+        "body": "{\n  \"data\": {\n    \"key\": \"Dishcare.Dishwasher.Program.Auto2\",\n    \"name\": \"Hot air\",\n    \"options\": []\n  }\n}",
+        "optionkey": "",
+        "programkey": "",
+        "settingkey": "",
+        "commandkey": "",
+        "statuskey": "",
+        "imagekey": "",
+        "x": 530,
+        "y": 1020,
+        "wires": [
+            [
+                "036cc8961c5de838"
+            ]
+        ]
+    },
+    {
+        "id": "ccbd36244862610f",
+        "type": "change",
+        "z": "46d0f42657c51689",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "false",
+                "tot": "bool"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 1870,
+        "y": 540,
+        "wires": [
+            [
+                "7f2b5e0e37f659c1"
+            ]
+        ]
+    },
+    {
+        "id": "9cc1a6e9173de644",
+        "type": "ui_button",
+        "z": "46d0f42657c51689",
+        "name": "Update",
+        "group": "a1fa7578085e9111",
+        "order": 6,
+        "width": 0,
+        "height": 0,
+        "passthru": false,
+        "label": "Update",
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "payload": "",
+        "payloadType": "date",
+        "topic": "topic",
+        "topicType": "msg",
+        "x": 100,
+        "y": 140,
+        "wires": [
+            [
+                "1d5c93541a0afea0"
+            ]
+        ]
+    },
+    {
+        "id": "ea0614b5142c9532",
+        "type": "function",
+        "z": "46d0f42657c51689",
+        "name": "simulation_data",
+        "func": "// JSON-Daten aus dem Payload (für das Beispiel, ersetzen mit deinen Daten)\nlet data = msg.payload.simulation_data;\n\n// Ermittlung der maximalen Länge der Arrays\nlet maxLength = Math.max(data.Netzeinspeisung_Wh_pro_Stunde.length, data.Netzbezug_Wh_pro_Stunde.length, data.akku_soc_pro_stunde.length, data.Last_Wh_pro_Stunde.length);\n\n// Startzeitpunkt ab der jetzigen Stunde in der lokalen Zeitzone\nlet now = new Date();\nnow.setMinutes(0, 0, 0);  // Minuten und Sekunden auf Null setzen\n\n// Initialisierung des SQL-Statements\nlet sqlStatements = \"\";\n\n// Schleife über die Anzahl der Stunden\nfor (let i = 0; i < maxLength; i++) {\n    // Berechnung des Zeitstempels für jede Stunde in der lokalen Zeit\n    let localTimestamp = new Date(now.getTime() + i * 60 * 60 * 1000);\n\n    // Manuelle Formatierung in das MariaDB-Format YYYY-MM-DD HH:MM:SS\n    let year = localTimestamp.getFullYear();\n    let month = ('0' + (localTimestamp.getMonth() + 1)).slice(-2);\n    let day = ('0' + localTimestamp.getDate()).slice(-2);\n    let hours = ('0' + localTimestamp.getHours()).slice(-2);\n    let minutes = ('0' + localTimestamp.getMinutes()).slice(-2);\n    let seconds = ('0' + localTimestamp.getSeconds()).slice(-2);\n\n    // Formatierung für MariaDB\n    let timestamp = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;\n    // Prüfen, ob es für diese Stunde überhaupt Daten gibt\n    let hasData = false;\n    let hourSqlStatements = \"\";\n\n    // Einfügen der Netzeinspeisung, wenn der Wert nicht null oder undefined ist\n    if (i < data.Netzeinspeisung_Wh_pro_Stunde.length && data.Netzeinspeisung_Wh_pro_Stunde[i] != null) {\n        hourSqlStatements += `INSERT INTO eos_simulation_data (topic, data, timestamp) VALUES ('Netzeinspeisung_Wh_pro_Stunde', ${data.Netzeinspeisung_Wh_pro_Stunde[i]}, '${timestamp}');\\n`;\n        hasData = true;\n    }\n\n    // Einfügen des Netzbezugs, wenn der Wert nicht null oder undefined ist\n    if (i < data.Netzbezug_Wh_pro_Stunde.length && data.Netzbezug_Wh_pro_Stunde[i] != null) {\n        hourSqlStatements += `INSERT INTO eos_simulation_data (topic, data, timestamp) VALUES ('Netzbezug_Wh_pro_Stunde', ${data.Netzbezug_Wh_pro_Stunde[i]}, '${timestamp}');\\n`;\n        hasData = true;\n    }\n\n    // Einfügen des Akkustands (SoC), wenn der Wert nicht null oder undefined ist nicht bei hasData berücksichtigen!\n    if (i < data.akku_soc_pro_stunde.length && data.akku_soc_pro_stunde[i] != null) {\n        hourSqlStatements += `INSERT INTO eos_simulation_data (topic, data, timestamp) VALUES ('akku_soc_pro_stunde', ${data.akku_soc_pro_stunde[i]}, '${timestamp}');\\n`;\n    }\n\n    // Einfügen der Last, wenn der Wert nicht null oder undefined ist\n    if (i < data.Last_Wh_pro_Stunde.length && data.Last_Wh_pro_Stunde[i] != null) {\n        hourSqlStatements += `INSERT INTO eos_simulation_data (topic, data, timestamp) VALUES ('last_pro_stunde', ${data.Last_Wh_pro_Stunde[i]}, '${timestamp}');\\n`;\n        hasData = true;\n    }\n\n    // Nur wenn für diese Stunde Daten vorhanden sind, die Anweisungen generieren\n    if (hasData) {\n        sqlStatements += `DELETE FROM eos_simulation_data WHERE timestamp = '${timestamp}';\\n`;\n        sqlStatements += hourSqlStatements;\n    }\n}\n\n// Das generierte SQL-Statement in msg.topic einfügen\nmsg.topic = sqlStatements;\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1080,
+        "y": 240,
+        "wires": [
+            [
+                "0f06d7cf64549a84"
+            ]
+        ]
+    },
+    {
+        "id": "e6c398d0890c214d",
+        "type": "http request",
+        "z": "46d0f42657c51689",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://192.168.1.135:5000/strompreis",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 290,
+        "y": 360,
+        "wires": [
+            [
+                "8ed3edc44e4a9259"
+            ]
+        ]
+    },
+    {
+        "id": "f34f862bfefae1b5",
+        "type": "inject",
+        "z": "46d0f42657c51689",
+        "name": "strompreis",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "2700",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 110,
+        "y": 360,
+        "wires": [
+            [
+                "e6c398d0890c214d"
+            ]
+        ]
+    },
+    {
+        "id": "8ed3edc44e4a9259",
+        "type": "function",
+        "z": "46d0f42657c51689",
+        "name": "rename",
+        "func": "msg.topic = \"strompreis\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 360,
+        "wires": [
+            [
+                "1d5c93541a0afea0"
+            ]
+        ]
+    },
+    {
+        "id": "0b4dbf3e3532074b",
+        "type": "inject",
+        "z": "46d0f42657c51689",
+        "name": "Lastprognose",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "2700",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 120,
+        "y": 400,
+        "wires": [
+            [
+                "228d70763df2bf70"
+            ]
+        ]
+    },
+    {
+        "id": "228d70763df2bf70",
+        "type": "http request",
+        "z": "46d0f42657c51689",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://192.168.1.135:5000/gesamtlast?year_energy=3500000",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 290,
+        "y": 400,
+        "wires": [
+            [
+                "1db2ba345ce1d03e"
+            ]
+        ]
+    },
+    {
+        "id": "1db2ba345ce1d03e",
+        "type": "function",
+        "z": "46d0f42657c51689",
+        "name": "rename",
+        "func": "msg.topic = \"gesamtlast\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 400,
+        "wires": [
+            [
+                "1d5c93541a0afea0"
+            ]
+        ]
+    },
+    {
+        "id": "7db2aff941afd94b",
+        "type": "inject",
+        "z": "46d0f42657c51689",
+        "name": "Pv Prognose",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "2700",
+        "crontab": "",
+        "once": true,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "str",
+        "x": 120,
+        "y": 440,
+        "wires": [
+            [
+                "4bfb4a8a9fc35037"
+            ]
+        ]
+    },
+    {
+        "id": "4bfb4a8a9fc35037",
+        "type": "http request",
+        "z": "46d0f42657c51689",
+        "name": "",
+        "method": "GET",
+        "ret": "obj",
+        "paytoqs": "ignore",
+        "url": "http://192.168.1.135:5000/pvforecast?url=https%3A//api.akkudoktor.net/forecast%3Flat%3D50.8588%26lon%3D7.3747%26power%3D5000%26azimuth%3D-6.0%26tilt%3D5.0%26powerInvertor%3D10000%26horizont%3D30%2C30%2C90%2C90%26power%3D4800%26azimuth%3D-100.0%26tilt%3D5.0%26powerInvertor%3D10000%26horizont%3D90%2C40%2C30%2C90%26power%3D1400%26azimuth%3D-31.0%26tilt%3D64.0%26powerInvertor%3D2000%26horizont%3D0%2C30%2C40%2C70%26power%3D1600%26azimuth%3D9.0%26tilt%3D46.0%26powerInvertor%3D1400%26horizont%3D70%2C60%2C40%2C40%26past_days%3D14%26cellCoEff%3D-0.36%26inverterEfficiency%3D0.8%26albedo%3D0.25%26timezone%3DEurope%252FBerlin%26hourly%3Drelativehumidity_2m%252Cwindspeed_10m",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "insecureHTTPParser": false,
+        "authType": "",
+        "senderr": false,
+        "headers": [],
+        "x": 290,
+        "y": 440,
+        "wires": [
+            [
+                "e1140f2bac702ab2",
+                "907e6b8972390e1a"
+            ]
+        ]
+    },
+    {
+        "id": "e1140f2bac702ab2",
+        "type": "function",
+        "z": "46d0f42657c51689",
+        "name": "rename",
+        "func": "msg.topic = \"pv_temp_forecast\";\nreturn msg;",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 460,
+        "y": 440,
+        "wires": [
+            [
+                "1d5c93541a0afea0"
+            ]
+        ]
+    },
+    {
+        "id": "323aa6e236a2b513",
+        "type": "ui_dropdown",
+        "z": "46d0f42657c51689",
+        "name": "",
+        "label": "Wallbox",
+        "tooltip": "",
+        "place": "Select option",
+        "group": "a1fa7578085e9111",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "multiple": false,
+        "options": [
+            {
+                "label": "",
+                "value": "11040",
+                "type": "str"
+            },
+            {
+                "label": "",
+                "value": "22080",
+                "type": "str"
+            }
+        ],
+        "payload": "",
+        "topic": "eauto_max_power",
+        "topicType": "str",
+        "className": "",
+        "x": 1000,
+        "y": 80,
+        "wires": [
+            [
+                "cf820cd8426e9f03"
+            ]
+        ]
+    },
+    {
+        "id": "cf820cd8426e9f03",
+        "type": "function",
+        "z": "46d0f42657c51689",
+        "name": "E-Auto Charge Ampere",
+        "func": "context.data = context.data || {};\nswitch (msg.topic) {\n    case \"eauto_max_power\":\n        context.data.eauto_max_power = parseFloat(msg.payload);\n        return null;\n    default:\n        break;\n}\n\nlet values = msg.payload.discharge_hours_bin; // Ihre 24 Stunden-Werte\nlet values_eauto = msg.payload.eautocharge_hours_float; // Ihre 24 Stunden-Werte\n\n\nlet currentDate = new Date(); // Aktuelles Datum und Zeit\nlet currentUTCDate = new Date(Date.UTC(currentDate.getUTCFullYear(), currentDate.getUTCMonth(), currentDate.getUTCDate()));\n\nlet currentYear = currentDate.getFullYear();\nlet currentMonth = currentDate.getMonth(); // Monat von 0-11\nlet currentDay = currentDate.getDate();\nlet currentHour = currentDate.getHours();\n\n// Index basierend auf dem aktuellen Datum und der Stunde finden\n// Annahme: values und values_eauto sind für den aktuellen Tag\nlet indexForCurrentHour = currentHour; // Wenn die Arrays genau 24 Einträge für jede Stunde haben\n\n// Werte für die aktuelle Stunde extrahieren\nlet dischargeHourValue = values[indexForCurrentHour];\nlet eautochargeHourValue = values_eauto[indexForCurrentHour];\n\n// Überprüfen, ob die maximale Leistung gesetzt wurde\nif (!context.data.eauto_max_power) {\n    node.error(\"eauto_max_power is not set!\");\n    return null;\n}\n\n// Berechne den aktuellen Strom in Ampere\nlet maxPower = context.data.eauto_max_power; // in Watt\nlet calculatedAmps = (eautochargeHourValue * maxPower) / (3 * 230); // 3-phasig und 230V\n\n// Zulässige Ampere-Werte\nlet allowedAmps = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16];\n\n// Finde den nächsten zulässigen Ampere-Wert\nlet closestAmp = allowedAmps.reduce((prev, curr) => {\n    return (Math.abs(curr - calculatedAmps) < Math.abs(prev - calculatedAmps) ? curr : prev);\n}, allowedAmps[0]);\nnode.warn(context.data.eauto_max_power);\nnode.warn(calculatedAmps);\n\n// Rückgabe des nächstgelegenen Ampere-Wertes\nmsg.payload = closestAmp;\nmsg.topic = closestAmp;\n\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1150,
+        "y": 880,
+        "wires": [
+            [
+                "67e78c8a8fbdc01d",
+                "0f0c53e526cdc77f"
+            ]
+        ]
+    },
+    {
+        "id": "67e78c8a8fbdc01d",
+        "type": "debug",
+        "z": "46d0f42657c51689",
+        "name": "debug 34",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1460,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "b78f61a3b7ca6ca5",
+        "type": "debug",
+        "z": "46d0f42657c51689",
+        "name": "debug 35",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 820,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "c1134a17a87f2293",
+        "type": "debug",
+        "z": "46d0f42657c51689",
+        "name": "debug 36",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1460,
+        "y": 820,
+        "wires": []
+    },
+    {
+        "id": "907e6b8972390e1a",
+        "type": "debug",
+        "z": "46d0f42657c51689",
+        "name": "debug 37",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 520,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "72b20968a37a23d9",
+        "type": "ui_slider",
+        "z": "46d0f42657c51689",
+        "name": "akku_preis",
+        "label": "Cent pro kWh im Akku",
+        "tooltip": "",
+        "group": "a1fa7578085e9111",
+        "order": 5,
+        "width": 0,
+        "height": 0,
+        "passthru": true,
+        "outs": "end",
+        "topic": "akku_preis",
+        "topicType": "str",
+        "min": 0,
+        "max": "30",
+        "step": 1,
+        "className": "",
+        "x": 510,
+        "y": 60,
+        "wires": [
+            [
+                "1d5c93541a0afea0"
+            ]
+        ]
+    },
+    {
+        "id": "fd454580c8bd3409",
+        "type": "debug",
+        "z": "46d0f42657c51689",
+        "name": "debug 38",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1060,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "aee72bd84ce5b95b",
+        "type": "debug",
+        "z": "46d0f42657c51689",
+        "name": "debug 39",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1340,
+        "y": 180,
+        "wires": []
+    },
+    {
+        "id": "98b79d76279384d6",
+        "type": "MySQLdatabase",
+        "name": "MariaDB",
+        "host": "192.168.1.135",
+        "port": "3306",
+        "db": "sensor",
+        "tz": "",
+        "charset": "UTF8"
+    },
+    {
+        "id": "fdc4730c4d327208",
+        "type": "mqtt-broker",
+        "name": "PIP",
+        "broker": "192.168.1.100",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "fc11c16064357af9",
+        "type": "mqtt-broker",
+        "name": "MQTT",
+        "broker": "192.168.1.135",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "a1fa7578085e9111",
+        "type": "ui_group",
+        "name": "Standard",
+        "tab": "39362bc3039b4a98",
+        "order": 1,
+        "disp": false,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "d4c0267181cfdd3b",
+        "type": "home-connect-auth",
+        "name": "",
+        "simulation_mode": false,
+        "scope": "",
+        "callback_url": "http://192.168.1.135:1880/homeconnect/auth/callback"
+    },
+    {
+        "id": "39362bc3039b4a98",
+        "type": "ui_tab",
+        "name": "EOS",
+        "icon": "dashboard",
+        "disabled": false,
+        "hidden": true
+    }
+]
