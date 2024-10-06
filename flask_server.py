@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import os
 import sys
 from datetime import datetime
@@ -12,6 +11,7 @@ from datetime import timedelta
 
 import pandas as pd
 from flask import Flask, jsonify, redirect, request, send_from_directory, url_for
+from flask_restx import Api, Resource, fields
 
 from modules.class_load import LoadForecast
 from modules.class_load_container import Gesamtlast
@@ -25,13 +25,19 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from config import db_config, get_start_enddate, optimization_hours, prediction_hours
 
 app = Flask(__name__)
+api = Api(app, version='1.0', title='API mit Swagger',
+          description='Eine einfache API, die Swagger unterstützt.')
+
+# Namespace erstellen
+ns = api.namespace('Beispiele', description='Beispieloperationen')
+
 
 opt_class = optimization_problem(
     prediction_hours=prediction_hours, strafe=10, optimization_hours=optimization_hours
 )
 
 
-@app.route("/soc", methods=["GET"])
+@ns.route("/soc", methods=["GET"])
 def flask_soc():
     # MariaDB connection details
     config = db_config
@@ -70,7 +76,7 @@ def flask_soc():
     return jsonify("Done")
 
 
-@app.route("/strompreis", methods=["GET"])
+@ns.route("/strompreis", methods=["GET"])
 def flask_strompreis():
     # Get the current date and the end date based on prediction hours
     date_now, date = get_start_enddate(
@@ -90,7 +96,7 @@ def flask_strompreis():
 
 
 # Endpoint to handle total load calculation based on the latest measured data
-@app.route("/gesamtlast", methods=["POST"])
+@ns.route("/gesamtlast", methods=["POST"])
 def flask_gesamtlast():
     # Retrieve data from the JSON body
     data = request.get_json()
@@ -154,7 +160,7 @@ def flask_gesamtlast():
     return jsonify(last.tolist())
 
 
-@app.route("/gesamtlast_simple", methods=["GET"])
+@ns.route("/gesamtlast_simple", methods=["GET"])
 def flask_gesamtlast_simple():
     if request.method == "GET":
         year_energy = float(
@@ -194,7 +200,7 @@ def flask_gesamtlast_simple():
         return jsonify(last.tolist())  # Return total load as JSON
 
 
-@app.route("/pvforecast", methods=["GET"])
+@ns.route("/pvforecast", methods=["GET"])
 def flask_pvprognose():
     if request.method == "GET":
         # Retrieve URL and AC power measurement from query parameters
@@ -230,7 +236,7 @@ def flask_pvprognose():
         return jsonify(ret)
 
 
-@app.route("/optimize", methods=["POST"])
+@ns.route("/optimize", methods=["POST"])
 def flask_optimize():
     if request.method == "POST":
         from datetime import datetime
@@ -272,7 +278,7 @@ def flask_optimize():
         return jsonify(result)  # Return optimization results as JSON
 
 
-@app.route("/visualisierungsergebnisse.pdf")
+@ns.route("/visualisierungsergebnisse.pdf")
 def get_pdf():
     # Endpoint to serve the generated PDF with visualization results
     return send_from_directory(
@@ -280,7 +286,7 @@ def get_pdf():
     )  # Adjust the directory if needed
 
 
-@app.route("/site-map")
+@ns.route("/site-map")
 def site_map():
     # Function to generate a site map of valid routes in the application
     def print_links(links):
@@ -305,7 +311,7 @@ def site_map():
     return print_links(sorted(links))  # Return the sorted links as HTML
 
 
-@app.route("/")
+@ns.route("/")
 def root():
     # Redirect the root URL to the site map
     return redirect("/site-map", code=302)
